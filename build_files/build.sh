@@ -2,7 +2,7 @@
 # Bazzite COSMIC - Gaming packages and system configuration
 set -ouex pipefail
 
-FEDORA_VERSION="${FEDORA_VERSION:-43}"
+FEDORA_VERSION="${FEDORA_VERSION:-44}"
 
 # ============================================================================
 # REPOSITORIES
@@ -45,11 +45,12 @@ dnf5 -y config-manager setopt "*rpmfusion*".priority=5 "*rpmfusion*".exclude="me
 # PATCHED SYSTEM PACKAGES (Valve's versions from Bazzite)
 # ============================================================================
 
-# Swap to Bazzite's patched packages
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite wireplumber wireplumber || true
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib pipewire pipewire || true
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib bluez bluez || true
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib xorg-x11-server-Xwayland xorg-x11-server-Xwayland || true
+# Swap to Bazzite's patched packages — must succeed; silent fallback to stock
+# packages would ship an unpatched audio/bluetooth/Xwayland stack.
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite wireplumber wireplumber
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib pipewire pipewire
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib bluez bluez
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib xorg-x11-server-Xwayland xorg-x11-server-Xwayland
 
 # Lock patched packages
 dnf5 versionlock add \
