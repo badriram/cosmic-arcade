@@ -5,11 +5,11 @@ A gaming-focused image combining [Fedora COSMIC Atomic](https://fedoraproject.or
 ## What's Included
 
 **From Bazzite:**
-- Custom kernel (fsync, HDR patches, gaming optimizations)
-- Valve's patched Mesa, Pipewire, Bluez, Xwayland
+- Valve's patched Pipewire, Bluez, Xwayland (from ublue-os COPRs)
 - Steam, Lutris, Gamescope, umu-launcher
 - MangoHud, vkBasalt, OBS VkCapture
 - ROCm for AMD GPUs
+- mesa-va-drivers-freeworld (full codec hardware decode, from rpmfusion)
 
 **From Fedora COSMIC:**
 - COSMIC desktop environment
