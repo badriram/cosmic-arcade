@@ -45,12 +45,26 @@ dnf5 -y config-manager setopt "*rpmfusion*".priority=5 "*rpmfusion*".exclude="me
 # PATCHED SYSTEM PACKAGES (Valve's versions from Bazzite)
 # ============================================================================
 
-# Swap to Bazzite's patched packages — must succeed; silent fallback to stock
-# packages would ship an unpatched audio/bluetooth/Xwayland stack.
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite wireplumber wireplumber
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib pipewire pipewire
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib bluez bluez
-dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib xorg-x11-server-Xwayland xorg-x11-server-Xwayland
+# Pull patched audio/bluetooth/Xwayland stack from Bazzite COPRs. The COPRs
+# have priority=1, so the resolver picks COPR versions transitively too —
+# e.g. swapping wireplumber drags pipewire from the same COPR as a dep,
+# which makes a later explicit pipewire swap a no-op ("already installed").
+# That's the system working; the real invariant is repo provenance, not
+# whether `swap` itself performed a change. So: swap non-fatally, then
+# assert each package resolves to a *bazzite* repo.
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite wireplumber wireplumber || true
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib pipewire pipewire || true
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib bluez bluez || true
+dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib xorg-x11-server-Xwayland xorg-x11-server-Xwayland || true
+
+for pkg in wireplumber pipewire bluez xorg-x11-server-Xwayland; do
+    from_repo=$(dnf5 repoquery --installed --qf '%{from_repo}' "${pkg}" 2>/dev/null | head -1)
+    if [[ "${from_repo}" != *bazzite* ]]; then
+        echo "FATAL: ${pkg} installed from '${from_repo}', expected a *bazzite* COPR" >&2
+        exit 1
+    fi
+    echo "✓ ${pkg} from ${from_repo}"
+done
 
 # Lock patched packages
 dnf5 versionlock add \
