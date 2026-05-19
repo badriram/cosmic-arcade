@@ -1,11 +1,14 @@
-# Bazzite COSMIC
+# Cosmic Arcade
 
-A gaming-focused image combining [Fedora COSMIC Atomic](https://fedoraproject.org/cosmic/) with [Bazzite](https://bazzite.gg/)'s gaming optimizations.
+A gaming-focused image combining [Fedora COSMIC Atomic](https://fedoraproject.org/cosmic/) with userspace patches borrowed from [Bazzite](https://bazzite.gg/). Stock Fedora kernel; gaming stack added on top.
 
 ## What's Included
 
-**From Bazzite:**
-- Valve's patched Pipewire, Bluez, Xwayland (from ublue-os COPRs)
+**Patched userspace (from ublue-os/bazzite COPRs):**
+- Pipewire (f43 only — falls back to Fedora stock on f44 until upstream catches up)
+- Wireplumber, Bluez, Xwayland
+
+**Gaming stack:**
 - Steam, Lutris, Gamescope, umu-launcher
 - MangoHud, vkBasalt, OBS VkCapture
 - ROCm for AMD GPUs
@@ -14,6 +17,7 @@ A gaming-focused image combining [Fedora COSMIC Atomic](https://fedoraproject.or
 **From Fedora COSMIC:**
 - COSMIC desktop environment
 - Clean Fedora base (no KDE/GNOME cruft)
+- Stock Fedora kernel
 
 **Shell & Utilities:**
 - zsh as default shell with sensible defaults
@@ -27,17 +31,17 @@ A gaming-focused image combining [Fedora COSMIC Atomic](https://fedoraproject.or
 just build
 
 # Or with podman directly
-podman build -t bazzite-cosmic:43 .
+podman build -t cosmic-arcade:44 .
 ```
 
 ## Installation
 
 ```bash
 # From local build
-rpm-ostree rebase ostree-unverified-image:containers-storage:localhost/bazzite-cosmic:43
+rpm-ostree rebase ostree-unverified-image:containers-storage:localhost/cosmic-arcade:44
 
 # From GitHub Container Registry
-rpm-ostree rebase ostree-unverified-image:docker://ghcr.io/badriram/bazzite-cosmic:latest
+rpm-ostree rebase ostree-unverified-image:docker://ghcr.io/badriram/cosmic-arcade:latest
 ```
 
 ## Rollback
@@ -53,7 +57,7 @@ This is a streamlined image. It does NOT include:
 - Steam Deck / Handheld support (hhd, gamescope-session)
 - Waydroid, Sunshine, Cockpit
 - Greenboot health checks
-- Bazzite's system configuration scripts
+- Bazzite's custom kernel and system configuration scripts
 
 For full Bazzite features on COSMIC, use a full Bazzite fork instead.
 

@@ -1,7 +1,7 @@
-# Bazzite COSMIC Minimal - Justfile
+# Cosmic Arcade - Justfile
 
-export FEDORA_VERSION := "43"
-export IMAGE_NAME := "bazzite-cosmic"
+export FEDORA_VERSION := "44"
+export IMAGE_NAME := "cosmic-arcade"
 
 # Build the image locally
 build:

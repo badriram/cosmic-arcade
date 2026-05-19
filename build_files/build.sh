@@ -1,5 +1,5 @@
 #!/bin/bash
-# Bazzite COSMIC - Gaming packages and system configuration
+# Cosmic Arcade - Gaming packages and system configuration
 set -ouex pipefail
 
 FEDORA_VERSION="${FEDORA_VERSION:-44}"
@@ -198,4 +198,4 @@ sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/terra*.repo 2>/dev/null || tru
 dnf5 clean all
 rm -rf /tmp/* /var/tmp/*
 
-echo "Bazzite COSMIC build complete"
+echo "Cosmic Arcade build complete"
