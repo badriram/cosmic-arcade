@@ -111,15 +111,16 @@ dnf5 -y install \
     umu-launcher
 
 # Overlays and capture
+# TODO(f44): libobs_*capture.i686 not built for f44 in ublue-os/obs-vkcapture
+# COPR. Only relevant for capturing from 32-bit games (rare on modern Proton).
+# Revisit when the COPR ships multilib for f44.
 dnf5 -y install \
     mangohud.x86_64 \
     mangohud.i686 \
     vkBasalt.x86_64 \
     vkBasalt.i686 \
     libobs_vkcapture.x86_64 \
-    libobs_vkcapture.i686 \
-    libobs_glcapture.x86_64 \
-    libobs_glcapture.i686
+    libobs_glcapture.x86_64
 
 # Wine/Proton dependencies
 dnf5 -y install \
