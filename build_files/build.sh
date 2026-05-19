@@ -39,17 +39,33 @@ dnf5 -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedo
 # Set repo priorities
 dnf5 -y config-manager setopt "*bazzite*".priority=1
 dnf5 -y config-manager setopt "*terra*".priority=3 "*terra*".exclude="steam"
-dnf5 -y config-manager setopt "*rpmfusion*".priority=5 "*rpmfusion*".exclude="mesa-*"
+# Keep Fedora/bazzite as the source for core mesa, but let mesa-va-drivers-freeworld
+# come through from rpmfusion — Fedora's stock mesa-va-drivers is a stub without
+# patent codec support.
+dnf5 -y config-manager setopt "*rpmfusion*".priority=5 \
+    "*rpmfusion*".exclude="mesa mesa-dri-drivers mesa-filesystem mesa-libEGL* mesa-libGL* mesa-libgbm* mesa-libOpenCL* mesa-vulkan-drivers*"
 
 # ============================================================================
 # PATCHED SYSTEM PACKAGES (Valve's versions from Bazzite)
 # ============================================================================
 
-# Swap to Bazzite's patched packages
+# Swap to Bazzite's patched packages. The COPRs are priority=1, so the
+# resolver may pull patched versions transitively (e.g. wireplumber's pipewire
+# dep), making a later explicit swap a no-op. That's fine — assert provenance
+# after the fact rather than requiring `swap` itself to have done the work.
 dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite wireplumber wireplumber || true
 dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib pipewire pipewire || true
 dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib bluez bluez || true
 dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib xorg-x11-server-Xwayland xorg-x11-server-Xwayland || true
+
+for pkg in wireplumber pipewire bluez xorg-x11-server-Xwayland; do
+    from_repo=$(dnf5 repoquery --installed --qf '%{from_repo}' "${pkg}" 2>/dev/null | head -1)
+    if [[ "${from_repo}" != *bazzite* ]]; then
+        echo "FATAL: ${pkg} installed from '${from_repo}', expected a *bazzite* COPR" >&2
+        exit 1
+    fi
+    echo "✓ ${pkg} from ${from_repo}"
+done
 
 # Lock patched packages
 dnf5 versionlock add \
@@ -58,10 +74,13 @@ dnf5 versionlock add \
     bluez bluez-libs \
     xorg-x11-server-Xwayland \
     mesa-dri-drivers mesa-filesystem mesa-libEGL mesa-libGL \
-    mesa-libgbm mesa-va-drivers mesa-vulkan-drivers || true
+    mesa-libgbm mesa-va-drivers-freeworld mesa-vulkan-drivers || true
 
-# 32-bit Mesa
-dnf5 -y install mesa-va-drivers.i686
+# VA hardware video decode (from rpmfusion — Fedora's mesa-va-drivers is a stub
+# without patent codecs)
+dnf5 -y install --enable-repo="*rpmfusion*" \
+    mesa-va-drivers-freeworld.x86_64 \
+    mesa-va-drivers-freeworld.i686
 
 # ============================================================================
 # GAMING PACKAGES
