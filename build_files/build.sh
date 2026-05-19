@@ -57,13 +57,22 @@ dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib pip
 dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib bluez bluez || true
 dnf5 -y swap --repo=copr:copr.fedorainfracloud.org:ublue-os:bazzite-multilib xorg-x11-server-Xwayland xorg-x11-server-Xwayland || true
 
+# TODO(f44): ublue-os/bazzite-multilib has no f44 pipewire build yet (only f43).
+# Accept Fedora's stock pipewire on f44 until the COPR catches up. Drop this
+# exception once `pipewire` appears on the fedora-44-x86_64 chroot at
+# https://copr.fedorainfracloud.org/coprs/ublue-os/bazzite-multilib/
 for pkg in wireplumber pipewire bluez xorg-x11-server-Xwayland; do
     from_repo=$(dnf5 repoquery --installed --qf '%{from_repo}' "${pkg}" 2>/dev/null | head -1)
-    if [[ "${from_repo}" != *bazzite* ]]; then
-        echo "FATAL: ${pkg} installed from '${from_repo}', expected a *bazzite* COPR" >&2
-        exit 1
+    if [[ "${from_repo}" == *bazzite* ]]; then
+        echo "✓ ${pkg} from ${from_repo}"
+        continue
     fi
-    echo "✓ ${pkg} from ${from_repo}"
+    if [[ "${pkg}" == "pipewire" && "${FEDORA_VERSION}" == "44" ]]; then
+        echo "⚠ ${pkg} from '${from_repo}' (no f44 bazzite build yet — accepting Fedora stock)"
+        continue
+    fi
+    echo "FATAL: ${pkg} installed from '${from_repo}', expected a *bazzite* COPR" >&2
+    exit 1
 done
 
 # Lock patched packages
