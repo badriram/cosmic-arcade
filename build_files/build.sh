@@ -39,7 +39,11 @@ dnf5 -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedo
 # Set repo priorities
 dnf5 -y config-manager setopt "*bazzite*".priority=1
 dnf5 -y config-manager setopt "*terra*".priority=3 "*terra*".exclude="steam"
-dnf5 -y config-manager setopt "*rpmfusion*".priority=5 "*rpmfusion*".exclude="mesa-*"
+# Keep Fedora/bazzite as the source for core mesa, but let mesa-va-drivers-freeworld
+# (and friends) come from rpmfusion — Fedora dropped mesa-va-drivers entirely in f44
+# and now relies on rpmfusion for VA acceleration.
+dnf5 -y config-manager setopt "*rpmfusion*".priority=5 \
+    "*rpmfusion*".exclude="mesa mesa-dri-drivers mesa-filesystem mesa-libEGL* mesa-libGL* mesa-libgbm* mesa-libOpenCL* mesa-vulkan-drivers*"
 
 # ============================================================================
 # PATCHED SYSTEM PACKAGES (Valve's versions from Bazzite)
@@ -82,10 +86,12 @@ dnf5 versionlock add \
     bluez bluez-libs \
     xorg-x11-server-Xwayland \
     mesa-dri-drivers mesa-filesystem mesa-libEGL mesa-libGL \
-    mesa-libgbm mesa-va-drivers mesa-vulkan-drivers || true
+    mesa-libgbm mesa-va-drivers-freeworld mesa-vulkan-drivers || true
 
-# 32-bit Mesa
-dnf5 -y install mesa-va-drivers.i686
+# VA hardware video decode (from rpmfusion — Fedora dropped mesa-va-drivers in f44)
+dnf5 -y install --enable-repo="*rpmfusion*" \
+    mesa-va-drivers-freeworld.x86_64 \
+    mesa-va-drivers-freeworld.i686
 
 # ============================================================================
 # GAMING PACKAGES
