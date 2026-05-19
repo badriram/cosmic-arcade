@@ -5,7 +5,8 @@
 ARG FEDORA_VERSION="${FEDORA_VERSION:-43}"
 ARG ARCH="${ARCH:-x86_64}"
 ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/cosmic-atomic:${FEDORA_VERSION}"
-ARG KERNEL_REF="ghcr.io/bazzite-org/kernel-bazzite:latest-f${FEDORA_VERSION}-${ARCH}"
+ARG KERNEL_FEDORA_VERSION="${FEDORA_VERSION}"
+ARG KERNEL_REF="ghcr.io/bazzite-org/kernel-bazzite:latest-f${KERNEL_FEDORA_VERSION}-${ARCH}"
 
 # Pull Bazzite kernel
 FROM ${KERNEL_REF} AS kernel
