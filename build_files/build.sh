@@ -96,16 +96,18 @@ dnf5 -y install --enable-repo="*rpmfusion*" \
 # ============================================================================
 
 # Core gaming
-# TODO(f44): gamescope on f44 comes from Fedora as a single package (no
-# gamescope-libs subpackage split); gamescope-shaders is bazzite-specific
-# and not packaged for f44 — gamescope JITs shaders at runtime instead.
-# When ublue-os/bazzite-multilib publishes a successful f44 gamescope
-# build, revisit (their current f44 builds are failing across all chroots).
+# TODO(f44): gamescope on f44 comes from Fedora as a single package, x86_64 only
+# (Koji builds gamescope.i686 but Fedora doesn't tag it for multilib release;
+# 32-bit gamescope libs aren't needed for normal Steam/Proton use anyway —
+# gamescope runs as the x86_64 parent compositor, 32-bit games run as Wine/Proton
+# clients inside it). No gamescope-libs subpackage split on Fedora; no
+# gamescope-shaders for f44 — gamescope JITs shaders at runtime instead.
+# When ublue-os/bazzite-multilib publishes a successful f44 gamescope build,
+# revisit (their current builds are failing across all chroots).
 dnf5 -y install \
     steam \
     lutris \
-    gamescope.x86_64 \
-    gamescope.i686 \
+    gamescope \
     umu-launcher
 
 # Overlays and capture
