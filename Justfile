@@ -1,6 +1,6 @@
 # Bazzite COSMIC Minimal - Justfile
 
-export FEDORA_VERSION := "44"
+export FEDORA_VERSION := "43"
 export IMAGE_NAME := "bazzite-cosmic"
 
 # Build the image locally

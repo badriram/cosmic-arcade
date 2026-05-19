@@ -2,11 +2,10 @@
 #
 # Uses Fedora COSMIC as base, adds Bazzite's custom kernel and gaming stack
 
-ARG FEDORA_VERSION="${FEDORA_VERSION:-44}"
+ARG FEDORA_VERSION="${FEDORA_VERSION:-43}"
 ARG ARCH="${ARCH:-x86_64}"
 ARG BASE_IMAGE="quay.io/fedora-ostree-desktops/cosmic-atomic:${FEDORA_VERSION}"
-ARG KERNEL_FEDORA_VERSION="43"
-ARG KERNEL_REF="ghcr.io/bazzite-org/kernel-bazzite:latest-f${KERNEL_FEDORA_VERSION}-${ARCH}"
+ARG KERNEL_REF="ghcr.io/bazzite-org/kernel-bazzite:latest-f${FEDORA_VERSION}-${ARCH}"
 
 # Pull Bazzite kernel
 FROM ${KERNEL_REF} AS kernel
@@ -19,7 +18,7 @@ COPY system_files /system_files
 # Main image
 FROM ${BASE_IMAGE}
 
-ARG FEDORA_VERSION="${FEDORA_VERSION:-44}"
+ARG FEDORA_VERSION="${FEDORA_VERSION:-43}"
 
 # Install Bazzite kernel
 RUN --mount=type=cache,dst=/var/cache \

@@ -19,7 +19,6 @@ A gaming-focused image combining [Fedora COSMIC Atomic](https://fedoraproject.or
 - zsh as default shell with sensible defaults
 - eza, btop, fastfetch
 - Flatpak with Flathub configured
-- `rebase-latest` and `install-gaming-flatpaks` shell functions in the default `.zshrc`
 
 ## Building
 
@@ -28,14 +27,14 @@ A gaming-focused image combining [Fedora COSMIC Atomic](https://fedoraproject.or
 just build
 
 # Or with podman directly
-podman build -t bazzite-cosmic:44 .
+podman build -t bazzite-cosmic:43 .
 ```
 
 ## Installation
 
 ```bash
 # From local build
-rpm-ostree rebase ostree-unverified-image:containers-storage:localhost/bazzite-cosmic:44
+rpm-ostree rebase ostree-unverified-image:containers-storage:localhost/bazzite-cosmic:43
 
 # From GitHub Container Registry
 rpm-ostree rebase ostree-unverified-image:docker://ghcr.io/badriram/bazzite-cosmic:latest

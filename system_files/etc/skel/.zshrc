@@ -89,23 +89,6 @@ alias pps="podman ps -a"
 alias pimg="podman images"
 
 # ============================================================================
-# IMAGE FUNCTIONS
-# ============================================================================
-# Rebase to the latest published image
-rebase-latest() {
-  rpm-ostree rebase ostree-unverified-image:docker://ghcr.io/badriram/bazzite-cosmic:latest
-}
-
-# Install Flathub apps commonly used alongside Steam
-install-gaming-flatpaks() {
-  flatpak install -y --noninteractive flathub \
-    com.heroicgameslauncher.hgl \
-    net.davidotek.pupgui2 \
-    com.github.Matoking.protontricks \
-    io.github.philipk.boilr
-}
-
-# ============================================================================
 # ENVIRONMENT
 # ============================================================================
 export EDITOR="${EDITOR:-nano}"
