@@ -1,4 +1,4 @@
-name: Build Bazzite COSMIC
+name: Build Cosmic Arcade
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: bazzite-cosmic
+  IMAGE_NAME: cosmic-arcade
   IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
   FEDORA_VERSION: 44
 

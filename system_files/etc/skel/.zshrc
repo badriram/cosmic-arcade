@@ -1,4 +1,4 @@
-# Bazzite COSMIC - Default zsh configuration
+# Cosmic Arcade - Default zsh configuration
 # Sensible defaults for an interactive shell
 
 # ============================================================================
