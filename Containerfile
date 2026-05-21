@@ -18,8 +18,9 @@ FROM docker.io/rust:1-alpine AS arcade-cli-builder
 RUN apk add --no-cache musl-dev
 COPY arcade-cli /src/arcade-cli
 WORKDIR /src/arcade-cli
-RUN cargo build --release --target x86_64-unknown-linux-musl --locked \
-    || cargo build --release --target x86_64-unknown-linux-musl
+# rust:1-alpine's host triple is already *-unknown-linux-musl, so a plain
+# release build produces a fully static binary at target/release/.
+RUN cargo build --release --locked || cargo build --release
 
 # Main image
 FROM ${BASE_IMAGE}
@@ -27,7 +28,7 @@ FROM ${BASE_IMAGE}
 ARG FEDORA_VERSION="${FEDORA_VERSION:-44}"
 
 COPY --from=arcade-cli-builder \
-    /src/arcade-cli/target/x86_64-unknown-linux-musl/release/arcade-cli \
+    /src/arcade-cli/target/release/arcade-cli \
     /usr/bin/arcade-cli
 
 # Install gaming packages and configure system
