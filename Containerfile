@@ -20,7 +20,9 @@ COPY arcade-cli /src/arcade-cli
 WORKDIR /src/arcade-cli
 # rust:1-alpine's host triple is already *-unknown-linux-musl, so a plain
 # release build produces a fully static binary at target/release/.
-RUN cargo build --release --locked || cargo build --release
+# --locked fails the build if Cargo.lock is out of sync with Cargo.toml,
+# which is what we want — bumps should be intentional, not implicit.
+RUN cargo build --release --locked
 
 # Main image
 FROM ${BASE_IMAGE}
