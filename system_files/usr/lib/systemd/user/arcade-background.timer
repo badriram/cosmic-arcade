@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh Cosmic Arcade background daily
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=12h
+Persistent=true
+Unit=arcade-background.service
+
+[Install]
+WantedBy=timers.target
