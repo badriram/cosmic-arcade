@@ -154,6 +154,7 @@ dnf5 -y install \
     vulkan-tools \
     p7zip \
     p7zip-plugins \
+    tmux \
     libxcrypt-compat
 
 # Winetricks
