@@ -45,13 +45,15 @@ dnf5 -y config-manager setopt "*terra*".priority=3 "*terra*".exclude="steam"
 # Keep Fedora/bazzite as the source for core mesa, but let mesa-va-drivers-freeworld
 # come through from rpmfusion — Fedora's stock mesa-va-drivers is a stub without
 # patent codec support.
-# mesa-filesystem deliberately NOT excluded: mesa-va-drivers-freeworld
-# (which we DO want from rpmfusion) hard-requires an exact-version
-# mesa-filesystem, and rpmfusion-free-updates moves faster than Fedora's
-# mesa, so blocking the filesystem package leaves freeworld unresolvable.
-# Letting mesa-filesystem track rpmfusion is safe — it's just dir ownership.
+# Keep Fedora/bazzite as the source for core mesa libs. mesa-filesystem
+# is intentionally NOT excluded — mesa-va-drivers-freeworld pins it by
+# exact version. Separately, rpmfusion-free-updates currently ships a
+# broken freeworld build (requires a mesa-filesystem version Fedora hasn't
+# published), so exclude freeworld from -updates only and let it come
+# from the rpmfusion-free base repo where the dep resolves.
 dnf5 -y config-manager setopt "*rpmfusion*".priority=5 \
     "*rpmfusion*".exclude="mesa mesa-dri-drivers mesa-libEGL* mesa-libGL* mesa-libgbm* mesa-libOpenCL* mesa-vulkan-drivers*"
+dnf5 -y config-manager setopt "rpmfusion-free-updates".exclude="mesa-va-drivers-freeworld*"
 
 # ============================================================================
 # PATCHED SYSTEM PACKAGES (Valve's versions from Bazzite)
