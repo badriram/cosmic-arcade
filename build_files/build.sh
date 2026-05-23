@@ -90,7 +90,7 @@ dnf5 versionlock add \
     wireplumber wireplumber-libs \
     bluez bluez-libs \
     xorg-x11-server-Xwayland \
-    mesa-dri-drivers mesa-filesystem mesa-libEGL mesa-libGL \
+    mesa-dri-drivers mesa-libEGL mesa-libGL \
     mesa-libgbm mesa-va-drivers-freeworld mesa-vulkan-drivers || true
 
 # VA hardware video decode (from rpmfusion — Fedora's mesa-va-drivers is a stub
