@@ -36,6 +36,9 @@ dnf5 -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedo
 mv /etc/yum.repos.d/fedora-multimedia.repo /etc/yum.repos.d/negativo17-fedora-multimedia.repo 2>/dev/null || true
 dnf5 -y config-manager addrepo --from-repofile=https://negativo17.org/repos/fedora-steam.repo
 
+# Tailscale official repo
+dnf5 -y config-manager addrepo --from-repofile=https://pkgs.tailscale.com/stable/fedora/tailscale.repo
+
 # Set repo priorities
 dnf5 -y config-manager setopt "*bazzite*".priority=1
 dnf5 -y config-manager setopt "*terra*".priority=3 "*terra*".exclude="steam"
@@ -162,6 +165,34 @@ curl -Lo /usr/bin/winetricks https://raw.githubusercontent.com/Winetricks/winetr
 chmod +x /usr/bin/winetricks
 
 # ============================================================================
+# VPN
+# ============================================================================
+
+# NetworkManager plugins cover OpenVPN, Cisco AnyConnect / GlobalProtect /
+# Pulse (openconnect), IKEv2 (strongswan), and L2TP. WireGuard support is
+# built into NetworkManager itself — wireguard-tools is for raw wg-quick use.
+# The `-gnome` subpackages contain the editor plugins
+# (libnm-vpn-plugin-*-editor.so) that nm-connection-editor loads — they are
+# not GNOME Shell components, just GTK-based, and are required for GUI VPN
+# import/edit on any desktop including COSMIC.
+dnf5 -y install \
+    NetworkManager-openvpn \
+    NetworkManager-openvpn-gnome \
+    NetworkManager-openconnect \
+    NetworkManager-openconnect-gnome \
+    NetworkManager-strongswan \
+    NetworkManager-strongswan-gnome \
+    NetworkManager-l2tp \
+    NetworkManager-l2tp-gnome \
+    nm-connection-editor \
+    wireguard-tools
+
+# Tailscale — daemon-based, so the unit needs to be enabled at build time
+# (atomic systems can't easily enable services post-deploy).
+dnf5 -y install tailscale
+systemctl enable tailscaled.service
+
+# ============================================================================
 # SYSTEM CONFIGURATION
 # ============================================================================
 
@@ -195,6 +226,7 @@ done
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/fedora-steam.repo 2>/dev/null || true
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/negativo17-fedora-multimedia.repo 2>/dev/null || true
 sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/terra*.repo 2>/dev/null || true
+sed -i 's@enabled=1@enabled=0@g' /etc/yum.repos.d/tailscale.repo 2>/dev/null || true
 
 dnf5 clean all
 rm -rf /tmp/* /var/tmp/*
