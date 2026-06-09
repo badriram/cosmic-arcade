@@ -88,16 +88,10 @@ dnf5 versionlock add \
     mesa-dri-drivers mesa-filesystem mesa-libEGL mesa-libGL \
     mesa-libgbm mesa-va-drivers-freeworld mesa-vulkan-drivers || true
 
-# VA hardware video decode.
-# TEMPORARILY DISABLED: rpmfusion-free-updates ships a broken freeworld
-# 26.0.7 (unresolvable mesa-filesystem dep) and has yanked the 26.0.6
-# build that previously worked. Until they republish a freeworld matching
-# Fedora's installed mesa, ship Fedora's stock mesa-va-drivers stub —
-# AV1/VP9 hardware decode still works; H.264/HEVC fall back to CPU.
-# Restore by uncommenting the install below.
-# dnf5 -y install --enable-repo="*rpmfusion*" \
-#     mesa-va-drivers-freeworld.x86_64 \
-#     mesa-va-drivers-freeworld.i686
+# VA hardware video decode — H.264/HEVC via freeworld build from rpmfusion.
+dnf5 -y install --enable-repo="*rpmfusion*" \
+    mesa-va-drivers-freeworld.x86_64 \
+    mesa-va-drivers-freeworld.i686
 
 # ============================================================================
 # GAMING PACKAGES
